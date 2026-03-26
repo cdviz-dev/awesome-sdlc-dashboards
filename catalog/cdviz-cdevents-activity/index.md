@@ -1,0 +1,20 @@
+---
+title: "CDviz - CDEvents Activity"
+kind: dashboard
+source: cdviz
+source_url: https://github.com/cdviz-dev/cdviz-grafana
+tags:
+  - topic:cd
+  - cdviz
+  - cdevents
+  - activity
+  - grafana
+images:
+  - images/screenshot.png
+---
+
+Grafana dashboard from the CDviz project showing overall CDEvents activity across the SDLC.
+Visualizes the volume and distribution of events (pipeline runs, task executions, artifact operations,
+test results) over time.
+
+Useful for getting a high-level view of CI/CD activity and spotting anomalies or periods of low activity.

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Awesome SDLC Dashboards</title>
+  <meta name="description" content="A curated catalog of dashboards and panels for Software Development Lifecycle metrics — inspiration for your own monitoring and observability setup.">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body x-data="catalog()" x-init="init()">
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div class="site-header-text">
+        <h1>Awesome SDLC Dashboards</h1>
+        <p>A curated catalog of dashboards &amp; panels for CI/CD and software delivery metrics.<br>
+           Browse for inspiration, contribute your own.</p>
+      </div>
+      <a class="github-link" href="https://github.com/cdviz-dev/awesome-sdlc-dashboards" target="_blank" rel="noopener" aria-label="View on GitHub">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- Filters -->
+  <div class="filters-bar">
+    <div class="filters-inner">
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input
+          type="search"
+          class="search-input"
+          placeholder="Search titles, descriptions, tags…"
+          x-model.debounce.200ms="search"
+          aria-label="Search"
+        >
+      </div>
+
+      <div class="filter-controls">
+        <select x-model="filterKind" aria-label="Filter by kind">
+          <option value="">All kinds</option>
+          <option value="dashboard">Dashboard</option>
+          <option value="panel">Panel</option>
+        </select>
+
+        <select x-model="filterPanelType" aria-label="Filter by panel type" x-show="filterKind !== 'dashboard'">
+          <option value="">All panel types</option>
+          <template x-for="pt in panelTypes" :key="pt">
+            <option :value="pt" x-text="pt"></option>
+          </template>
+        </select>
+
+        <select x-model="filterTopic" aria-label="Filter by topic">
+          <option value="">All topics</option>
+          <template x-for="t in topics" :key="t">
+            <option :value="t" x-text="t"></option>
+          </template>
+        </select>
+
+        <select x-model="filterSource" aria-label="Filter by source">
+          <option value="">All sources</option>
+          <template x-for="src in sources" :key="src">
+            <option :value="src" x-text="src"></option>
+          </template>
+        </select>
+
+        <button
+          class="clear-btn"
+          x-show="hasActiveFilters"
+          @click="clearFilters"
+          aria-label="Clear filters"
+        >Clear filters</button>
+      </div>
+    </div>
+
+    <!-- Active tag filter chip -->
+    <div class="filter-tag-chip" x-show="filterTag" x-cloak>
+      <span>Tag:</span>
+      <span class="chip" x-text="filterTag"></span>
+      <button @click="filterTag = ''" aria-label="Remove tag filter">✕</button>
+    </div>
+  </div>
+
+  <!-- Results bar -->
+  <div class="results-bar">
+    <span x-show="!loading" x-text="`${filtered.length} of ${entries.length} entries`"></span>
+    <span x-show="loading">Loading…</span>
+  </div>
+
+  <!-- Card grid -->
+  <main class="card-grid" x-show="!loading">
+    <template x-for="entry in filtered" :key="entry.slug">
+      <article class="card" :class="`kind-${entry.kind}`">
+
+        <!-- Thumbnail -->
+        <div class="card-image-wrap" @click="openModal(entry)">
+          <template x-if="entry.thumbnail">
+            <img
+              :src="entry.thumbnail"
+              :alt="entry.title"
+              loading="lazy"
+              class="card-image"
+            >
+          </template>
+          <template x-if="!entry.thumbnail">
+            <div class="card-image-placeholder">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+            </div>
+          </template>
+        </div>
+
+        <!-- Body -->
+        <div class="card-body">
+          <div class="card-badges">
+            <span class="badge" :class="`badge-${entry.kind}`" x-text="entry.kind"></span>
+            <span class="badge badge-panel-type" x-show="entry.panel_type" x-text="entry.panel_type"></span>
+            <span class="badge badge-source" x-show="entry.source" x-text="entry.source"></span>
+          </div>
+
+          <h2 class="card-title" x-text="entry.title"></h2>
+
+          <p class="card-description" x-text="firstLine(entry.description)"></p>
+
+          <!-- Parent dashboard link for panels -->
+          <p class="card-parent" x-show="entry.related_dashboard">
+            Part of:
+            <a href="#"
+               @click.prevent="filterByDashboard(entry.related_dashboard)"
+               x-text="entry.related_dashboard"
+            ></a>
+          </p>
+
+          <div class="card-footer">
+            <div class="card-tags">
+              <template x-for="tag in entry.tags" :key="tag">
+                <button
+                  class="tag"
+                  :class="{ 'tag-active': filterTag === tag, 'tag-topic': tag.startsWith('topic:') }"
+                  @click="toggleTag(tag)"
+                  x-text="tag"
+                ></button>
+              </template>
+            </div>
+            <a
+              x-show="entry.source_url"
+              :href="entry.source_url"
+              target="_blank"
+              rel="noopener"
+              class="card-link"
+            >View source ↗</a>
+          </div>
+        </div>
+      </article>
+    </template>
+
+    <!-- Empty state -->
+    <div class="empty-state" x-show="filtered.length === 0 && !loading">
+      <p>No entries match your filters.</p>
+      <button @click="clearFilters">Clear filters</button>
+    </div>
+  </main>
+
+  <!-- Lightbox modal -->
+  <div
+    class="modal-overlay"
+    x-show="modal.open"
+    x-cloak
+    @click.self="closeModal"
+    @keydown.escape.window="closeModal"
+  >
+    <div class="modal-box" role="dialog" :aria-label="modal.entry?.title">
+      <button class="modal-close" @click="closeModal" aria-label="Close">✕</button>
+      <template x-if="modal.entry">
+        <div class="modal-content">
+          <div class="modal-image-wrap">
+            <img
+              :src="modal.entry.images[modal.imageIdx]"
+              :alt="modal.entry.title"
+              class="modal-image"
+            >
+            <!-- Image nav when multiple images -->
+            <div class="modal-image-nav" x-show="modal.entry.images.length > 1">
+              <button @click="modal.imageIdx = Math.max(0, modal.imageIdx - 1)" :disabled="modal.imageIdx === 0">‹</button>
+              <span x-text="`${modal.imageIdx + 1} / ${modal.entry.images.length}`"></span>
+              <button @click="modal.imageIdx = Math.min(modal.entry.images.length - 1, modal.imageIdx + 1)" :disabled="modal.imageIdx === modal.entry.images.length - 1">›</button>
+            </div>
+          </div>
+          <div class="modal-meta">
+            <div class="card-badges">
+              <span class="badge" :class="`badge-${modal.entry.kind}`" x-text="modal.entry.kind"></span>
+              <span class="badge badge-panel-type" x-show="modal.entry.panel_type" x-text="modal.entry.panel_type"></span>
+              <span class="badge badge-source" x-show="modal.entry.source" x-text="modal.entry.source"></span>
+            </div>
+            <h2 x-text="modal.entry.title"></h2>
+            <div class="modal-description" x-html="modal.entry.description_html"></div>
+            <div class="card-tags" x-show="modal.entry.tags.length">
+              <template x-for="tag in modal.entry.tags" :key="tag">
+                <button class="tag" @click="toggleTag(tag); closeModal()" x-text="tag"></button>
+              </template>
+            </div>
+            <a
+              x-show="modal.entry.source_url"
+              :href="modal.entry.source_url"
+              target="_blank"
+              rel="noopener"
+              class="card-link"
+            >View source ↗</a>
+          </div>
+        </div>
+      </template>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <p>
+      <a href="https://github.com/cdviz-dev/awesome-sdlc-dashboards" target="_blank" rel="noopener">Contribute on GitHub</a>
+      · Inspired by the <a href="https://cdevents.dev" target="_blank" rel="noopener">CDEvents</a> community
+    </p>
+  </footer>
+
+  <script>
+    function catalog() {
+      return {
+        entries: [],
+        loading: true,
+        search: '',
+        filterKind: '',
+        filterPanelType: '',
+        filterTopic: '',
+        filterSource: '',
+        filterTag: '',
+        modal: { open: false, entry: null, imageIdx: 0 },
+
+        async init() {
+          try {
+            const res = await fetch('./catalog.json');
+            this.entries = await res.json();
+          } catch (e) {
+            console.error('Failed to load catalog.json', e);
+          } finally {
+            this.loading = false;
+          }
+        },
+
+        get topics() {
+          return [...new Set(this.entries.flatMap(e => e.topics ?? []))].sort();
+        },
+        get sources() {
+          return [...new Set(this.entries.map(e => e.source).filter(Boolean))].sort();
+        },
+        get panelTypes() {
+          return [...new Set(this.entries.map(e => e.panel_type).filter(Boolean))].sort();
+        },
+        get hasActiveFilters() {
+          return this.search || this.filterKind || this.filterPanelType ||
+                 this.filterTopic || this.filterSource || this.filterTag;
+        },
+
+        get filtered() {
+          return this.entries.filter(e => {
+            if (this.filterKind && e.kind !== this.filterKind) return false;
+            if (this.filterPanelType && e.panel_type !== this.filterPanelType) return false;
+            if (this.filterTopic && !(e.topics ?? []).includes(this.filterTopic)) return false;
+            if (this.filterSource && e.source !== this.filterSource) return false;
+            if (this.filterTag && !e.tags.includes(this.filterTag)) return false;
+            if (this.search) {
+              const q = this.search.toLowerCase();
+              return e.title.toLowerCase().includes(q)
+                || e.description.toLowerCase().includes(q)
+                || e.tags.some(t => t.toLowerCase().includes(q))
+                || (e.source || '').toLowerCase().includes(q);
+            }
+            return true;
+          });
+        },
+
+        firstLine(text) {
+          return (text || '').split('\n').find(l => l.trim()) || '';
+        },
+        toggleTag(tag) {
+          this.filterTag = this.filterTag === tag ? '' : tag;
+        },
+        filterByDashboard(slug) {
+          this.clearFilters();
+          this.search = slug;
+        },
+        clearFilters() {
+          this.search = '';
+          this.filterKind = '';
+          this.filterPanelType = '';
+          this.filterTopic = '';
+          this.filterSource = '';
+          this.filterTag = '';
+        },
+        openModal(entry) {
+          this.modal = { open: true, entry, imageIdx: 0 };
+          document.body.style.overflow = 'hidden';
+        },
+        closeModal() {
+          this.modal.open = false;
+          document.body.style.overflow = '';
+        },
+      };
+    }
+  </script>
+</body>
+</html>

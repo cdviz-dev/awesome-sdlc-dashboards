@@ -1,0 +1,23 @@
+[tools]
+bun = "latest"
+
+[tasks.install]
+description = "Install dependencies"
+run = "bun install --frozen-lockfile"
+
+[tasks.build]
+description = "Build the catalog site into dist/"
+run = "bun run scripts/build.ts"
+depends = ["install"]
+
+[tasks.dev]
+description = "Build then serve the site locally at http://localhost:3000"
+run = [
+  "bun run scripts/build.ts",
+  "bun run scripts/serve.ts",
+]
+depends = ["install"]
+
+[tasks.serve]
+description = "Serve the already-built dist/ at http://localhost:3000 (no rebuild)"
+run = "bun run scripts/serve.ts"

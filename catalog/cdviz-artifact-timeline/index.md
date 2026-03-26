@@ -1,0 +1,21 @@
+---
+title: "CDviz - Artifact Timeline"
+kind: dashboard
+source: cdviz
+source_url: https://github.com/cdviz-dev/cdviz-grafana
+tags:
+  - topic:cd
+  - cdviz
+  - cdevents
+  - artifacts
+  - timeline
+  - grafana
+images:
+  - images/screenshot.png
+---
+
+Grafana dashboard from the CDviz project showing a timeline of artifact events (built, published, deployed)
+based on [CDEvents](https://cdevents.dev) standard.
+
+Provides visibility into the lifecycle of software artifacts across environments,
+making it easy to trace which artifact version is deployed where and when.
