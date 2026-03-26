@@ -83,10 +83,19 @@ async function buildCatalog(): Promise<Entry[]> {
     }
 
     // front matter `images` overrides auto-discovered ones (relative to entry dir)
-    const images: string[] =
-      Array.isArray(data.images) && data.images.length > 0
-        ? data.images.map((p: string) => `catalog/${slug}/${p}`)
-        : imageRefs;
+    let images: string[];
+    if (Array.isArray(data.images) && data.images.length > 0) {
+      images = [];
+      for (const p of data.images as string[]) {
+        const src = join(CATALOG_DIR, slug, p);
+        const destDir = join(DIST_DIR, "catalog", slug);
+        await mkdir(destDir, { recursive: true });
+        await copyFile(src, join(destDir, p));
+        images.push(`catalog/${slug}/${p}`);
+      }
+    } else {
+      images = imageRefs;
+    }
 
     entries.push({
       slug,
