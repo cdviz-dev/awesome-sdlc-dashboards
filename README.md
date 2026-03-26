@@ -97,4 +97,4 @@ scripts/
 ## License
 
 Content is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
-Code is licensed under [MIT](LICENSE).
+Code is licensed under [Apache 2.0](LICENSE).
