@@ -1,6 +1,5 @@
 import { readdir, readFile, copyFile, mkdir, writeFile } from "fs/promises";
 import { join, extname } from "path";
-import matter from "gray-matter";
 import { marked } from "marked";
 import sanitizeHtml from "sanitize-html";
 
@@ -54,17 +53,17 @@ async function buildCatalog(): Promise<Entry[]> {
   for (const dirent of slugDirs) {
     if (!dirent.isDirectory()) continue;
     const slug = dirent.name;
-    const mdPath = join(CATALOG_DIR, slug, "index.md");
+    const yamlPath = join(CATALOG_DIR, slug, "index.yaml");
 
     let raw: string;
     try {
-      raw = await readFile(mdPath, "utf-8");
+      raw = await readFile(yamlPath, "utf-8");
     } catch {
-      console.warn(`  skip ${slug}: no index.md`);
+      console.warn(`  skip ${slug}: no index.yaml`);
       continue;
     }
 
-    const { data, content: body } = matter(raw);
+    const data = Bun.YAML.parse(raw) as Record<string, unknown>;
 
     // Copy images dir and collect refs
     const srcImages = join(CATALOG_DIR, slug, "images");
@@ -110,8 +109,8 @@ async function buildCatalog(): Promise<Entry[]> {
       images,
       thumbnail: images[0],
       related_dashboard: data.related_dashboard ?? undefined,
-      description: body.trim(),
-      description_html: renderMarkdown(body.trim()),
+      description: String(data.description ?? "").trim(),
+      description_html: renderMarkdown(String(data.description ?? "").trim()),
     });
   }
 

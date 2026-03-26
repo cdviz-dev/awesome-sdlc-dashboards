@@ -1,4 +1,4 @@
----
+# yaml-language-server: $schema=../../schema/entry.json
 title: "GitHub Actions - Total Minutes Used"
 kind: panel
 panel_type: stat
@@ -15,9 +15,8 @@ tags:
 images:
   - images/screenshot.png
 related_dashboard: github-actions-usage-metrics
----
+description: |
+  Single-value stat panel showing total GitHub Actions minutes consumed over the selected time period.
+  Part of the GitHub Actions Usage Metrics dashboard.
 
-Single-value stat panel showing total GitHub Actions minutes consumed over the selected time period.
-Part of the GitHub Actions Usage Metrics dashboard.
-
-Key metric for budget tracking and CI cost monitoring.
+  Key metric for budget tracking and CI cost monitoring.

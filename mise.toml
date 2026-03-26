@@ -21,3 +21,13 @@ depends = ["install"]
 [tasks.serve]
 description = "Serve the already-built dist/ at http://localhost:3000 (no rebuild)"
 run = "bun run scripts/serve.ts"
+
+[tasks.validate]
+description = "Validate all catalog entries against the JSON schema"
+run = "bun run scripts/validate.ts"
+depends = ["install"]
+
+[tasks.test]
+description = "Run schema unit tests"
+run = "bun test scripts/validate.test.ts"
+depends = ["install"]

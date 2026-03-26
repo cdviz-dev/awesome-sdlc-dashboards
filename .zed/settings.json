@@ -1,0 +1,13 @@
+{
+  "lsp": {
+    "yaml-language-server": {
+      "initialization_options": {
+        "yaml": {
+          "schemas": {
+            "./schema/entry.json": ["catalog/*/index.yaml"]
+          }
+        }
+      }
+    }
+  }
+}

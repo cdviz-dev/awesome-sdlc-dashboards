@@ -1,4 +1,4 @@
----
+# yaml-language-server: $schema=../../schema/entry.json
 title: "GitHub Actions - Usage by Repository"
 kind: panel
 panel_type: table
@@ -16,10 +16,9 @@ tags:
 images:
   - images/screenshot.png
 related_dashboard: github-actions-usage-metrics
----
+description: |
+  Table panel breaking down GitHub Actions usage (minutes and job runs) per repository.
+  Part of the GitHub Actions Usage Metrics dashboard.
 
-Table panel breaking down GitHub Actions usage (minutes and job runs) per repository.
-Part of the GitHub Actions Usage Metrics dashboard.
-
-Helps identify which repositories are the biggest consumers of CI resources,
-useful for cost allocation and optimization targeting.
+  Helps identify which repositories are the biggest consumers of CI resources,
+  useful for cost allocation and optimization targeting.

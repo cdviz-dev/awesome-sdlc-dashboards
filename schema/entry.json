@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "entry",
+  "title": "Catalog Entry",
+  "description": "A dashboard or panel entry in the awesome-sdlc-dashboards catalog",
+  "type": "object",
+  "required": ["title", "kind"],
+  "additionalProperties": false,
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Display name shown on the card"
+    },
+    "kind": {
+      "type": "string",
+      "enum": ["dashboard", "panel"],
+      "description": "Whether this is a full dashboard or an individual panel"
+    },
+    "panel_type": {
+      "type": "string",
+      "description": "Chart type for panels",
+      "examples": ["stat", "table", "timeseries", "bar", "gauge", "heatmap", "piechart", "text"]
+    },
+    "source": {
+      "type": "string",
+      "description": "Where it comes from: github, grafana, datadog, cdviz, prometheus, ...",
+      "examples": ["github", "grafana", "datadog", "cdviz", "prometheus", "loki", "jaeger", "jenkins", "gitlab"]
+    },
+    "links": {
+      "type": "array",
+      "description": "Typed URLs associated with this entry",
+      "items": {
+        "type": "object",
+        "required": ["rel", "url"],
+        "additionalProperties": false,
+        "properties": {
+          "rel": {
+            "type": "string",
+            "description": "Relationship type",
+            "examples": ["live", "source", "docs", "demo", "article"]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The URL"
+          }
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "description": "Keywords for search and filtering. Use topic:<domain> for high-level classification.",
+      "items": { "type": "string" }
+    },
+    "images": {
+      "type": "array",
+      "description": "Paths to screenshot images relative to the entry directory",
+      "items": { "type": "string" }
+    },
+    "related_dashboard": {
+      "type": "string",
+      "description": "Slug of the parent dashboard (for panel entries)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Markdown description of what this dashboard/panel shows and why it is useful"
+    }
+  }
+}

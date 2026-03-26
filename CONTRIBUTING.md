@@ -21,12 +21,12 @@ catalog/
 Choose a slug that is lowercase, hyphen-separated, and descriptive
 (e.g., `github-actions-usage-by-repository`, `grafana-dora-lead-time`).
 
-### 2. Write `index.md`
+### 2. Write `index.yaml`
 
 Copy this template and fill it in:
 
-```markdown
----
+```yaml
+# yaml-language-server: $schema=../../schema/entry.json
 title: "Your Dashboard or Panel Title"
 kind: dashboard          # dashboard | panel
 panel_type:              # panels only — stat | table | timeseries | bar | gauge | heatmap | piechart | text | ...
@@ -41,13 +41,18 @@ tags:
 images:
   - images/screenshot.png
 related_dashboard:       # panels only — slug of the parent dashboard entry (if it exists)
----
+description: |
+  Short paragraph describing what this dashboard/panel shows and why it is useful.
 
-Short paragraph describing what this dashboard/panel shows and why it is useful.
-
-More detail if needed — what data sources it needs, what questions it helps answer,
-any interesting interactions or filters.
+  More detail if needed — what data sources it needs, what questions it helps answer,
+  any interesting interactions or filters. Markdown is supported: **bold**, _italic_,
+  [links](https://example.com), bullet lists, etc.
 ```
+
+The `# yaml-language-server:` comment on the first line enables schema validation and
+autocomplete in VS Code, Zed, and any editor using [yaml-language-server](https://github.com/redhat-developer/yaml-language-server).
+The schema is also configured automatically for all `catalog/*/index.yaml` files via
+`.vscode/settings.json` and `.zed/settings.json`.
 
 #### Field reference
 
@@ -61,6 +66,7 @@ any interesting interactions or filters.
 | `tags` | Recommended | Keywords for search and filtering. Use `topic:<domain>` for high-level classification (see below) |
 | `images` | Recommended | List of image paths relative to the entry directory |
 | `related_dashboard` | Optional | Slug of the parent dashboard (for panel entries) |
+| `description` | Recommended | Markdown text describing the entry (use YAML literal block `\|`) |
 
 ### 3. Add screenshots
 
@@ -71,12 +77,20 @@ Put images in `catalog/your-entry-slug/images/`.
 - **Naming**: `screenshot.png` for the primary image, `screenshot-*.png` for extras
 - The first image in the `images:` list is used as the thumbnail
 
-### 4. Test locally
+### 4. Validate and test locally
+
+```bash
+mise run validate   # check your entry against the JSON schema
+mise run build      # generates dist/
+mise run dev        # builds then serves at http://localhost:3000
+```
+
+Or with plain bun:
 
 ```bash
 bun install
-bun run build   # generates dist/
-bun run dev     # builds then serves at http://localhost:3000
+bun run scripts/validate.ts   # schema validation
+bun run scripts/build.ts      # build
 ```
 
 ### 5. Open a pull request
