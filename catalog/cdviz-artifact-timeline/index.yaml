@@ -13,7 +13,7 @@ tags:
   - timeline
   - grafana
 images:
-  - images/screenshot.png
+  - screenshot.png
 description: |
   Grafana dashboard from the CDviz project showing a timeline of artifact events (built, published, deployed)
   based on [CDEvents](https://cdevents.dev) standard.

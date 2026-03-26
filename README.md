@@ -64,7 +64,7 @@ tags:
   - my-tool
   - my-metric
 images:
-  - images/screenshot.png
+  - screenshot.png
 ---
 
 What this dashboard shows and why it's useful.

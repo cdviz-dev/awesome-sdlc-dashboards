@@ -13,7 +13,7 @@ tags:
   - failure-rate
   - queue-time
 images:
-  - images/screenshot.png
+  - screenshot.png
 description: |
   Overview dashboard built into GitHub showing CI/CD performance metrics for an organization.
   Covers average job run time, queue time, job failure rate, and breakdowns by repository,

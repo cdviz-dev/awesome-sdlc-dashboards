@@ -12,7 +12,7 @@ tags:
   - activity
   - grafana
 images:
-  - images/screenshot.png
+  - screenshot.png
 description: |
   Grafana dashboard from the CDviz project showing overall CDEvents activity across the SDLC.
   Visualizes the volume and distribution of events (pipeline runs, task executions, artifact operations,

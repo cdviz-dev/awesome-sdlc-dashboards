@@ -14,7 +14,7 @@ tags:
   - minutes
   - repository
 images:
-  - images/screenshot.png
+  - screenshot.png
 related_dashboard: github-actions-usage-metrics
 description: |
   Table panel breaking down GitHub Actions usage (minutes and job runs) per repository.

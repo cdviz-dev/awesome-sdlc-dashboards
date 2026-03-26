@@ -12,7 +12,7 @@ tags:
   - cost
   - minutes
 images:
-  - images/screenshot.png
+  - screenshot.png
 description: |
   Overview dashboard built into GitHub showing CI/CD usage metrics for an organization.
   Covers total minutes consumed, job runs, and breakdowns by repository, workflow, job, runner type, and OS.

@@ -39,7 +39,7 @@ tags:
   - your-tag
   - another-tag
 images:
-  - images/screenshot.png
+  - screenshot.png
 related_dashboard:       # panels only — slug of the parent dashboard entry (if it exists)
 description: |
   Short paragraph describing what this dashboard/panel shows and why it is useful.

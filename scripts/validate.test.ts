@@ -64,7 +64,7 @@ describe("entry schema", () => {
         source: "grafana",
         links: [{ rel: "live", url: "https://example.com/dashboard" }],
         tags: ["topic:ci", "github-actions"],
-        images: ["images/screenshot.png"],
+        images: ["screenshot.png"],
         related_dashboard: "my-dashboard",
         description: "A useful panel.",
       }),
