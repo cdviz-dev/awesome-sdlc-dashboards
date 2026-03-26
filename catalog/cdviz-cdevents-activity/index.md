@@ -2,7 +2,9 @@
 title: "CDviz - CDEvents Activity"
 kind: dashboard
 source: cdviz
-source_url: https://github.com/cdviz-dev/cdviz-grafana
+links:
+  - rel: source
+    url: https://github.com/cdviz-dev/cdviz-grafana
 tags:
   - topic:cd
   - cdviz

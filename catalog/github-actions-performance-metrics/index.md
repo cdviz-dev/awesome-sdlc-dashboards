@@ -2,7 +2,9 @@
 title: "GitHub Actions - Performance Metrics"
 kind: dashboard
 source: github
-source_url: https://github.com/orgs/cdviz-dev/actions/metrics/performance
+links:
+  - rel: live
+    url: https://github.com/orgs/cdviz-dev/actions/metrics/performance
 tags:
   - topic:ci
   - github-actions

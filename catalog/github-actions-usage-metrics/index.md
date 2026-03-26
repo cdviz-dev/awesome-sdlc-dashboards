@@ -2,7 +2,9 @@
 title: "GitHub Actions - Usage Metrics"
 kind: dashboard
 source: github
-source_url: https://github.com/orgs/cdviz-dev/actions/metrics/usage
+links:
+  - rel: live
+    url: https://github.com/orgs/cdviz-dev/actions/metrics/usage
 tags:
   - topic:ci
   - github-actions

@@ -457,6 +457,34 @@ button { cursor: pointer; font: inherit; }
   font-weight: 700;
   line-height: 1.3;
 }
+.modal-links {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+.modal-link {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .82rem;
+  font-weight: 500;
+  color: var(--accent);
+}
+.modal-link:hover { color: var(--accent-hover); text-decoration: none; }
+.modal-link-rel {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: .68rem;
+  font-weight: 600;
+  padding: .1rem .45rem;
+  border-radius: 99px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  min-width: 3.5rem;
+  text-align: center;
+}
+
 .modal-description {
   font-size: .85rem;
   color: var(--text-muted);

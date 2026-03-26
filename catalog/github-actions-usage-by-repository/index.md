@@ -3,7 +3,9 @@ title: "GitHub Actions - Usage by Repository"
 kind: panel
 panel_type: table
 source: github
-source_url: https://github.com/orgs/cdviz-dev/actions/metrics/usage?tab=repositories
+links:
+  - rel: live
+    url: https://github.com/orgs/cdviz-dev/actions/metrics/usage?tab=repositories
 tags:
   - topic:ci
   - github-actions

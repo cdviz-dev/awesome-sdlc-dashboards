@@ -31,7 +31,9 @@ title: "Your Dashboard or Panel Title"
 kind: dashboard          # dashboard | panel
 panel_type:              # panels only — stat | table | timeseries | bar | gauge | heatmap | piechart | text | ...
 source: github           # github | grafana | datadog | cdviz | prometheus | loki | jaeger | ...
-source_url: https://...  # link to see it live, its documentation, or its source repo
+links:
+  - rel: live            # live | source | docs | demo | article
+    url: https://...
 tags:
   - topic:ci             # use topic:<domain> for high-level classification (see below)
   - your-tag
@@ -54,8 +56,8 @@ any interesting interactions or filters.
 | `title` | Yes | Display name shown on the card |
 | `kind` | Yes | `dashboard` or `panel` |
 | `panel_type` | Panels only | Chart type: `stat`, `table`, `timeseries`, `bar`, `gauge`, `heatmap`, `piechart`, `text`, … |
-| `source` | Recommended | Tool/platform: `github`, `grafana`, `datadog`, `cdviz`, `prometheus`, … |
-| `source_url` | Recommended | Link to see it live or learn more |
+| `source` | Recommended | Where it comes from: `github`, `grafana`, `datadog`, `cdviz`, `prometheus`, … |
+| `links` | Recommended | List of `{rel, url}` — see rel values below |
 | `tags` | Recommended | Keywords for search and filtering. Use `topic:<domain>` for high-level classification (see below) |
 | `images` | Recommended | List of image paths relative to the entry directory |
 | `related_dashboard` | Optional | Slug of the parent dashboard (for panel entries) |
@@ -99,6 +101,20 @@ An entry can have multiple topics (e.g. `topic:ci` and `topic:cost` for a CI bil
 
 ### Suggested sources
 `github` · `grafana` · `datadog` · `cdviz` · `prometheus` · `loki` · `jaeger` · `jenkins` · `gitlab`
+
+### Link `rel` values
+
+Each item in `links:` has a `rel` that describes the relationship:
+
+| rel | Meaning |
+|---|---|
+| `live` | The running dashboard or panel (may be org-specific) — shown as "View live ↗" on the card |
+| `source` | Source code, Grafana JSON, Helm chart, Terraform module, etc. |
+| `docs` | Official documentation for the tool or dashboard |
+| `demo` | Public demo instance anyone can access |
+| `article` | Blog post, tutorial, or reference material |
+
+An entry can have multiple links with different `rel` values. At least one link is recommended.
 
 Feel free to add new values — just be consistent with the style (lowercase, hyphen-separated).
 

@@ -37,7 +37,8 @@ interface Entry {
   panel_type?: string;
   topics: string[];   // values of tags with the "topic:" prefix, without the prefix
   source?: string;
-  source_url?: string;
+  links: Array<{ rel: string; url: string }>;
+  primary_url?: string;  // url of first `live` link, or first link of any rel
   tags: string[];
   images: string[];
   thumbnail?: string;
@@ -97,7 +98,14 @@ async function buildCatalog(): Promise<Entry[]> {
         .filter((t) => t.startsWith("topic:"))
         .map((t) => t.slice("topic:".length)),
       source: data.source ?? undefined,
-      source_url: data.source_url ?? undefined,
+      links: Array.isArray(data.links)
+        ? (data.links as Array<{ rel: string; url: string }>)
+        : [],
+      get primary_url() {
+        return (
+          this.links.find((l) => l.rel === "live")?.url ?? this.links[0]?.url
+        );
+      },
       tags: Array.isArray(data.tags) ? data.tags : [],
       images,
       thumbnail: images[0],
