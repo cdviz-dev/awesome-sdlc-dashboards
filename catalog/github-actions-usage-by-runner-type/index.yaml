@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=../../schema/entry.json
+title: "GitHub Actions - Usage by Runner Type"
+kind: panel
+panel_type: table
+source: github
+tags:
+  - topic:ci
+  - github-actions
+  - usage
+  - cost
+  - minutes
+  - runner
+images:
+  - screenshot.png
+related_dashboard: github-actions-usage-metrics
+description: |
+  Table panel breaking down GitHub Actions usage (minutes and job runs) by runner type
+  (GitHub-hosted vs self-hosted). Part of the GitHub Actions Usage Metrics dashboard.
+
+  Helps understand the split between managed and self-hosted infrastructure costs.

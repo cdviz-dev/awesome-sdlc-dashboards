@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=../../schema/entry.json
+title: "GitHub Actions - Failed Job Usage"
+kind: panel
+panel_type: stat
+source: github
+links:
+  - rel: live
+    url: https://github.com/orgs/cdviz-dev/actions/metrics/performance
+tags:
+  - topic:ci
+  - github-actions
+  - performance
+  - reliability
+  - cost
+  - failure-rate
+images:
+  - screenshot.png
+related_dashboard: github-actions-performance-metrics
+description: |
+  Single-value stat panel showing the total CI minutes consumed by failed jobs.
+  Part of the GitHub Actions Performance Metrics dashboard.
+
+  Highlights the cost of CI failures and helps prioritize reliability improvements with the highest cost impact.

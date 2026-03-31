@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=../../schema/entry.json
+title: "GitHub Actions - Job Failure Rate"
+kind: panel
+panel_type: stat
+source: github
+links:
+  - rel: live
+    url: https://github.com/orgs/cdviz-dev/actions/metrics/performance
+tags:
+  - topic:ci
+  - github-actions
+  - performance
+  - reliability
+  - failure-rate
+images:
+  - screenshot.png
+related_dashboard: github-actions-performance-metrics
+description: |
+  Single-value stat panel showing the percentage of job runs that failed over the selected time period.
+  Part of the GitHub Actions Performance Metrics dashboard.
+
+  Key reliability indicator for tracking CI stability and setting improvement targets.

@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=../../schema/entry.json
+title: "GitHub Actions - Usage by Job"
+kind: panel
+panel_type: table
+source: github
+links:
+  - rel: live
+    url: https://github.com/orgs/cdviz-dev/actions/metrics/usage?tab=jobs
+tags:
+  - topic:ci
+  - github-actions
+  - usage
+  - cost
+  - minutes
+  - jobs
+images:
+  - screenshot.png
+related_dashboard: github-actions-usage-metrics
+description: |
+  Table panel breaking down GitHub Actions usage (minutes and job runs) per job.
+  Part of the GitHub Actions Usage Metrics dashboard.
+
+  Helps pinpoint expensive individual jobs that drive CI cost within workflows.

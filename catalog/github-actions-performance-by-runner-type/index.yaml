@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=../../schema/entry.json
+title: "GitHub Actions - Performance by Runner Type"
+kind: panel
+panel_type: table
+source: github
+links:
+  - rel: live
+    url: https://github.com/orgs/cdviz-dev/actions/metrics/performance
+tags:
+  - topic:ci
+  - github-actions
+  - performance
+  - reliability
+  - runner
+images:
+  - screenshot.png
+related_dashboard: github-actions-performance-metrics
+description: |
+  Table panel showing performance metrics (run time, queue time, failure rate) broken down by runner type
+  (GitHub-hosted vs self-hosted). Part of the GitHub Actions Performance Metrics dashboard.
+
+  Helps compare the reliability and speed of managed vs self-hosted runners.

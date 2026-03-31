@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=../../schema/entry.json
+title: "GitHub Actions - Performance by Runtime OS"
+kind: panel
+panel_type: table
+source: github
+links:
+  - rel: live
+    url: https://github.com/orgs/cdviz-dev/actions/metrics/performance
+tags:
+  - topic:ci
+  - github-actions
+  - performance
+  - reliability
+  - os
+images:
+  - screenshot.png
+related_dashboard: github-actions-performance-metrics
+description: |
+  Table panel showing performance metrics (run time, queue time, failure rate) broken down by operating system.
+  Part of the GitHub Actions Performance Metrics dashboard.
+
+  Useful for comparing CI reliability and speed across Linux, macOS, and Windows runners.

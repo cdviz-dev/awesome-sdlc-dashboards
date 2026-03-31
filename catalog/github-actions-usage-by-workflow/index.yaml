@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=../../schema/entry.json
+title: "GitHub Actions - Usage by Workflow"
+kind: panel
+panel_type: table
+source: github
+links:
+  - rel: live
+    url: https://github.com/orgs/cdviz-dev/actions/metrics/usage
+tags:
+  - topic:ci
+  - github-actions
+  - usage
+  - cost
+  - minutes
+  - workflow
+images:
+  - screenshot.png
+related_dashboard: github-actions-usage-metrics
+description: |
+  Table panel breaking down GitHub Actions usage (minutes and job runs) per workflow.
+  Part of the GitHub Actions Usage Metrics dashboard.
+
+  Helps identify which workflows consume the most CI resources within a repository.

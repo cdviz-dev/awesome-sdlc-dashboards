@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=../../schema/entry.json
+title: "GitHub Actions - Usage by Runtime OS"
+kind: panel
+panel_type: table
+source: github
+links:
+  - rel: live
+    url: https://github.com/orgs/cdviz-dev/actions/metrics/usage?tab=runtime
+tags:
+  - topic:ci
+  - github-actions
+  - usage
+  - cost
+  - minutes
+  - os
+images:
+  - screenshot.png
+related_dashboard: github-actions-usage-metrics
+description: |
+  Table panel breaking down GitHub Actions usage (minutes and job runs) by operating system (Linux, macOS, Windows).
+  Part of the GitHub Actions Usage Metrics dashboard.
+
+  Useful for cost optimization since macOS and Windows minutes are billed at a higher rate than Linux.

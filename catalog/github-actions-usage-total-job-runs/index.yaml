@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=../../schema/entry.json
+title: "GitHub Actions - Total Job Runs"
+kind: panel
+panel_type: stat
+source: github
+links:
+  - rel: live
+    url: https://github.com/orgs/github-samples/actions/metrics/usage
+tags:
+  - topic:ci
+  - github-actions
+  - usage
+  - jobs
+images:
+  - screenshot.png
+related_dashboard: github-actions-usage-metrics
+description: |
+  Single-value stat panel showing total GitHub Actions job runs over the selected time period.
+  Part of the GitHub Actions Usage Metrics dashboard.
+
+  Useful for understanding overall CI activity volume alongside minute consumption.
