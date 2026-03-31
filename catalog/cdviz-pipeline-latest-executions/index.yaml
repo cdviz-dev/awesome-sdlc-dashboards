@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=../../schema/entry.json
+title: "CDviz - Pipeline Latest Executions"
+kind: dashboard
+source: cdviz
+links:
+  - rel: source
+    url: https://github.com/cdviz-dev/cdviz/tree/main/cdviz-grafana
+tags:
+  - topic:cd
+  - cdviz
+  - cdevents
+  - pipeline
+  - grafana
+images:
+  - screenshot.png
+description: |
+  Grafana dashboard from the CDviz project showing the latest pipeline executions based on
+  [CDEvents](https://cdevents.dev) standard.
+
+  Provides a quick overview of recent pipeline run statuses, making it easy to spot failures
+  or in-progress executions across repositories.

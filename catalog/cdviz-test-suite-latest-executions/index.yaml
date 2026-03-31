@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=../../schema/entry.json
+title: "CDviz - Test Suite Latest Executions"
+kind: dashboard
+source: cdviz
+links:
+  - rel: source
+    url: https://github.com/cdviz-dev/cdviz/tree/main/cdviz-grafana
+tags:
+  - topic:cd
+  - cdviz
+  - cdevents
+  - tests
+  - grafana
+images:
+  - screenshot.png
+description: |
+  Grafana dashboard from the CDviz project showing the latest test suite executions based on
+  [CDEvents](https://cdevents.dev) standard.
+
+  Gives an aggregated view of test suite results (overall pass/fail counts per suite run),
+  making it easy to track test suite health over time.

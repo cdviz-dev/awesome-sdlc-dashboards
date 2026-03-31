@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=../../schema/entry.json
+title: "CDviz - Task Latest Executions"
+kind: dashboard
+source: cdviz
+links:
+  - rel: source
+    url: https://github.com/cdviz-dev/cdviz/tree/main/cdviz-grafana
+tags:
+  - topic:cd
+  - cdviz
+  - cdevents
+  - task
+  - grafana
+images:
+  - screenshot.png
+description: |
+  Grafana dashboard from the CDviz project showing the latest task executions based on
+  [CDEvents](https://cdevents.dev) standard.
+
+  Offers fine-grained visibility into individual task (job/step) outcomes within pipelines,
+  useful for debugging failures at the task level.
