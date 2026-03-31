@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=../../schema/entry.json
+title: "Middleware - DORA Metrics"
+kind: dashboard
+source: middleware
+links:
+  - rel: source
+    url: https://github.com/middlewarehq/middleware
+  - rel: docs
+    url: https://middlewarehq.com/docs/product/oss
+description: |
+  Self-hosted DORA metrics dashboard from the Middleware open-source project.
+  Tracks the four key DORA metrics — Deployment Frequency, Lead Time for Changes,
+  Mean Time to Restore (MTTR), and Change Failure Rate — based on Git and pull request history.
+
+  Built as a Next.js web application, it connects to GitHub (and supports Jenkins/Jira) and
+  provides trend reports, industry benchmark comparisons, and 90-day historical insights.
+tags:
+  - topic:cd
+  - topic:ci
+  - dora
+  - deployment-frequency
+  - lead-time
+  - mttr
+  - change-failure-rate
+  - pull-requests
+  - middleware
+  - self-hosted
+images:
+  - screenshot.png

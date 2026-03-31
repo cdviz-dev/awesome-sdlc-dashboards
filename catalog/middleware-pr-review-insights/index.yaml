@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=../../schema/entry.json
+title: "Middleware - PR Review Insights"
+kind: panel
+panel_type: table
+source: middleware
+links:
+  - rel: source
+    url: https://github.com/middlewarehq/middleware
+related_dashboard: middleware-dora-metrics
+tags:
+  - topic:ci
+  - pull-requests
+  - code-review
+  - cycle-time
+  - rework
+  - middleware
+images:
+  - screenshot.png
+description: |
+  Panel showing pull request review analytics — review duration, unreviewed PRs, stuck PRs,
+  rework rate, and merge bottlenecks. Part of the Middleware DORA metrics dashboard.
+
+  Helps engineering teams identify slow review cycles, blocked PRs, and high rework rates
+  that inflate lead time and reduce delivery throughput.

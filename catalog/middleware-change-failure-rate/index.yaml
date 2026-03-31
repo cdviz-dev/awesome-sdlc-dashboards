@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=../../schema/entry.json
+title: "Middleware - Change Failure Rate"
+kind: panel
+panel_type: timeseries
+source: middleware
+links:
+  - rel: source
+    url: https://github.com/middlewarehq/middleware
+related_dashboard: middleware-dora-metrics
+tags:
+  - topic:cd
+  - dora
+  - change-failure-rate
+  - reliability
+  - middleware
+images:
+  - screenshot.png
+description: |
+  Panel showing Change Failure Rate — the percentage of deployments that cause a production failure.
+  Part of the Middleware DORA metrics dashboard.
+
+  Tracks failures over time and benchmarks against DORA performance levels,
+  useful for monitoring the stability of the release process.

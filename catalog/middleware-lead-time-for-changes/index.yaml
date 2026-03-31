@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=../../schema/entry.json
+title: "Middleware - Lead Time for Changes"
+kind: panel
+panel_type: timeseries
+source: middleware
+links:
+  - rel: source
+    url: https://github.com/middlewarehq/middleware
+related_dashboard: middleware-dora-metrics
+tags:
+  - topic:cd
+  - dora
+  - lead-time
+  - cycle-time
+  - pull-requests
+  - middleware
+images:
+  - screenshot.png
+description: |
+  Panel showing Lead Time for Changes — the time from first commit to production deployment.
+  Part of the Middleware DORA metrics dashboard.
+
+  Breaks down the PR lifecycle into response time, rework time, and merge time phases,
+  helping identify where bottlenecks occur in the delivery process.

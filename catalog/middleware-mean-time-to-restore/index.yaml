@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=../../schema/entry.json
+title: "Middleware - Mean Time to Restore"
+kind: panel
+panel_type: timeseries
+source: middleware
+links:
+  - rel: source
+    url: https://github.com/middlewarehq/middleware
+related_dashboard: middleware-dora-metrics
+tags:
+  - topic:cd
+  - dora
+  - mttr
+  - reliability
+  - incidents
+  - middleware
+images:
+  - screenshot.png
+description: |
+  Panel showing Mean Time to Restore (MTTR) — how long it takes to recover from a production failure.
+  Part of the Middleware DORA metrics dashboard.
+
+  Measures recovery speed over time and compares against DORA elite/high/medium/low benchmarks,
+  supporting incident management and on-call improvement efforts.

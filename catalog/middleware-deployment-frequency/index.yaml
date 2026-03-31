@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=../../schema/entry.json
+title: "Middleware - Deployment Frequency"
+kind: panel
+panel_type: timeseries
+source: middleware
+links:
+  - rel: source
+    url: https://github.com/middlewarehq/middleware
+related_dashboard: middleware-dora-metrics
+tags:
+  - topic:cd
+  - dora
+  - deployment-frequency
+  - middleware
+images:
+  - screenshot.png
+description: |
+  Panel showing Deployment Frequency — how often code is deployed to production.
+  Part of the Middleware DORA metrics dashboard.
+
+  Displays trend over time and compares against DORA performance buckets
+  (Elite, High, Medium, Low) based on Git deployment history.
