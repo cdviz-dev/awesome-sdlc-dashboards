@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=../../schema/entry.json
+title: "Datadog - CI Pipelines"
+kind: dashboard
+source: datadog
+links:
+  - rel: live
+    url: https://app.datadoghq.com/ci/pipelines
+  - rel: docs
+    url: https://docs.datadoghq.com/continuous_integration/search/
+tags:
+  - topic:ci
+  - pipeline
+  - failure-rate
+  - duration
+images:
+  - screenshot.png
+description: |
+  Shows all CI pipelines tracked in Datadog CI Visibility, with aggregate
+  stats per pipeline: execution count, failure count, failure rate, median
+  duration, median change, last build status, and last run time. Helps teams
+  spot broken or slow pipelines at a glance across the default branch. Requires
+  Datadog CI Visibility and a connected CI provider (GitHub Actions, GitLab,
+  Jenkins, CircleCI, etc.).

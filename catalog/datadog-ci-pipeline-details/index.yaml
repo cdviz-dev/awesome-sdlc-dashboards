@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=../../schema/entry.json
+title: "Datadog - CI Pipeline Details"
+kind: dashboard
+source: datadog
+links:
+  - rel: docs
+    url: https://docs.datadoghq.com/continuous_integration/search/
+tags:
+  - topic:ci
+  - pipeline
+  - failure-rate
+  - duration
+  - stage-breakdown
+images:
+  - screenshot.png
+description: |
+  Single-pipeline drill-down in Datadog CI Visibility showing: total
+  executions (error vs success bar chart), error rate over time, build
+  duration percentiles (max/p50/p95), total time spent by stage (stacked
+  area), and a Stage Summary with errored executions, P50/P95 duration,
+  exec time %, and failure rate per stage. Helps identify which stage
+  causes failures or slowdowns. Requires Datadog CI Visibility with a
+  connected CI provider.
