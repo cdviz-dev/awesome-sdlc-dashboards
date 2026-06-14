@@ -7,7 +7,6 @@ links:
     url: https://github.com/cdviz-dev/cdviz/tree/main/cdviz-grafana
 tags:
   - topic:cd
-  - cdviz
   - cdevents
   - tests
   - grafana
