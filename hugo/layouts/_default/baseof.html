@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
+  <script>document.documentElement.className = document.documentElement.className.replace('no-js', 'js');</script>
   {{ partial "head.html" . }}
 </head>
 <body>
@@ -8,7 +9,12 @@
   <header class="site-header">
     <div class="site-header-inner">
       <div class="site-header-text">
-        <h1><a href="{{ "/" | relURL }}" style="color:inherit;text-decoration:none">{{ .Site.Title }}</a></h1>
+        {{/* h1 only on the home page; elsewhere the entry title is the page h1. */}}
+        {{ if .IsHome }}
+        <h1 class="site-title"><a href="{{ "/" | relURL }}" style="color:inherit;text-decoration:none">{{ .Site.Title }}</a></h1>
+        {{ else }}
+        <p class="site-title"><a href="{{ "/" | relURL }}" style="color:inherit;text-decoration:none">{{ .Site.Title }}</a></p>
+        {{ end }}
         <p>A curated catalog of dashboards &amp; panels for CI/CD and software delivery metrics.<br>
            Browse for inspiration, contribute your own.</p>
       </div>

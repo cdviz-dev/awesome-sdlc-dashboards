@@ -1,7 +1,8 @@
-import { readdir, readFile, copyFile, mkdir, writeFile } from "fs/promises";
+import { readdir, readFile, copyFile, mkdir, writeFile, stat } from "fs/promises";
 import { join, extname } from "path";
 import { marked } from "marked";
 import sanitizeHtml from "sanitize-html";
+import { imageSize } from "image-size";
 
 const ALLOWED_TAGS = [
   "p", "br", "strong", "em", "a", "ul", "ol", "li",
@@ -42,9 +43,26 @@ interface Entry {
   tags: string[];
   images: string[];
   thumbnail?: string;
+  thumbnail_width?: number;   // intrinsic px — set on <img> to prevent layout shift (CLS)
+  thumbnail_height?: number;
   related_dashboard?: string;
   description: string;       // raw markdown (used for search)
   description_html: string;  // sanitized HTML (used for display)
+  lastmod?: string;          // ISO date from source index.yaml mtime (sitemap freshness)
+}
+
+const BASE_URL = "https://cdviz-dev.github.io/awesome-sdlc-dashboards/";
+
+/** Intrinsic pixel size of an image file, or undefined if unreadable. */
+async function imageDimensions(
+  path: string,
+): Promise<{ width?: number; height?: number }> {
+  try {
+    const { width, height } = imageSize(await readFile(path));
+    return { width, height };
+  } catch {
+    return {};
+  }
 }
 
 async function buildCatalog(): Promise<Entry[]> {
@@ -98,6 +116,12 @@ async function buildCatalog(): Promise<Entry[]> {
       images = imageRefs;
     }
 
+    const thumbnail = images[0];
+    const thumbDims = thumbnail
+      ? await imageDimensions(join(HUGO_STATIC_DIR, thumbnail))
+      : {};
+    const lastmod = (await stat(yamlPath)).mtime.toISOString();
+
     entries.push({
       slug,
       title: String(data.title ?? slug),
@@ -117,10 +141,13 @@ async function buildCatalog(): Promise<Entry[]> {
       },
       tags: Array.isArray(data.tags) ? data.tags : [],
       images,
-      thumbnail: images[0],
+      thumbnail,
+      thumbnail_width: thumbDims.width,
+      thumbnail_height: thumbDims.height,
       related_dashboard: data.related_dashboard ?? undefined,
       description: String(data.description ?? "").trim(),
       description_html: renderMarkdown(String(data.description ?? "").trim()),
+      lastmod,
     });
   }
 
@@ -198,11 +225,32 @@ async function writeHugoContent(entries: Entry[]): Promise<void> {
     if (entry.source) fm.source = entry.source;
     if (entry.panel_type) fm.panel_type = entry.panel_type;
     if (entry.thumbnail) fm.thumbnail = entry.thumbnail;
+    if (entry.thumbnail_width) fm.thumbnail_width = entry.thumbnail_width;
+    if (entry.thumbnail_height) fm.thumbnail_height = entry.thumbnail_height;
     if (entry.related_dashboard) fm.related_dashboard = entry.related_dashboard;
+    if (entry.lastmod) fm.lastmod = entry.lastmod;
 
     const content = `---\n${toYamlFrontMatter(fm)}---\n\n${entry.description}\n`;
     await writeFile(join(dir, "index.md"), content);
   }
+}
+
+/** Generate llms.txt (https://llmstxt.org) so AI agents can discover the catalog without JS. */
+function buildLlmsTxt(entries: Entry[]): string {
+  const lines = [
+    "# Awesome SDLC Dashboards",
+    "",
+    "> A curated catalog of dashboards and panels for Software Development Lifecycle metrics — inspiration for your own monitoring and observability setup.",
+    "",
+    "## Catalog",
+    "",
+  ];
+  for (const e of entries) {
+    const url = new URL(`catalog/${e.slug}/`, BASE_URL).href;
+    const desc = firstParagraph(e.description);
+    lines.push(`- [${e.title}](${url})${desc ? `: ${desc}` : ""}`);
+  }
+  return lines.join("\n") + "\n";
 }
 
 async function main(): Promise<void> {
@@ -217,6 +265,7 @@ async function main(): Promise<void> {
       join(HUGO_STATIC_DIR, "catalog.json"),
       JSON.stringify(entries, null, 2),
     ),
+    writeFile(join(HUGO_STATIC_DIR, "llms.txt"), buildLlmsTxt(entries)),
   ]);
 
   console.log(`\nBuilt ${entries.length} entries:`);

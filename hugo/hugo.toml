@@ -3,12 +3,16 @@ title = "Awesome SDLC Dashboards"
 languageCode = "en-us"
 publishDir = "../dist"
 relativeURLs = true
+enableRobotsTXT = true
 
 disableKinds = ["taxonomy", "term", "section"]
 
 [params]
   description = "A curated catalog of dashboards and panels for Software Development Lifecycle metrics — inspiration for your own monitoring and observability setup."
   githubURL = "https://github.com/cdviz-dev/awesome-sdlc-dashboards"
+  # Default social-share image (1200x630), used when a page has no thumbnail.
+  # No leading slash: absURL then keeps the GitHub Pages subpath.
+  ogImage = "og-default.png"
 
 [markup.goldmark.renderer]
   unsafe = false

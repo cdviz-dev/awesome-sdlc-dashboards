@@ -10,17 +10,36 @@
 <meta property="og:description" content="{{ with .Params.description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
 <meta property="og:url" content="{{ .Permalink }}">
 <meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
-{{ with .Params.thumbnail }}<meta property="og:image" content="{{ . | absURL }}">{{ end }}
+{{ $ogImage := or .Params.thumbnail .Site.Params.ogImage }}
+{{ with $ogImage }}<meta property="og:image" content="{{ . | absURL }}">{{ end }}
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
-{{ with .Params.thumbnail }}<meta name="twitter:image" content="{{ . | absURL }}">{{ end }}
+{{ with $ogImage }}<meta name="twitter:image" content="{{ . | absURL }}">{{ end }}
 
 {{ if .IsPage }}
 {{ $j := printf `{"@context":"https://schema.org","@type":"SoftwareApplication","name":%q,"description":%q,"url":%q,"applicationCategory":"DeveloperApplication"` .Title (.Params.description | default "") .Permalink -}}
 {{ with .Params.thumbnail }}{{ $j = printf `%s,"screenshot":%q` $j (. | absURL) }}{{ end -}}
 <script type="application/ld+json">{{ printf "%s}" $j | safeJS }}</script>
+{{ end }}
+
+{{ if .IsHome }}
+{{ $entries := sort (where .Site.RegularPages "Section" "catalog") "Title" }}
+{{ $items := slice }}
+{{ range $i, $e := $entries }}
+  {{ $items = $items | append (dict "@type" "ListItem" "position" (add $i 1) "url" $e.Permalink "name" $e.Title) }}
+{{ end }}
+{{ $ld := dict
+  "@context" "https://schema.org"
+  "@type" "CollectionPage"
+  "name" .Site.Title
+  "description" .Site.Params.description
+  "url" .Permalink
+  "isPartOf" (dict "@type" "WebSite" "name" .Site.Title "url" (.Site.BaseURL))
+  "mainEntity" (dict "@type" "ItemList" "numberOfItems" (len $items) "itemListElement" $items)
+}}
+<script type="application/ld+json">{{ $ld | jsonify (dict "indent" "") | safeJS }}</script>
 {{ end }}
 
 {{ if .IsHome }}

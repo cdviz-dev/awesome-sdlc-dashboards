@@ -81,6 +81,8 @@
             <img
               :src="entry.thumbnail"
               :alt="entry.title"
+              :width="entry.thumbnail_width || null"
+              :height="entry.thumbnail_height || null"
               loading="lazy"
               class="card-image"
             >
@@ -146,6 +148,48 @@
     </div>
   </main>
 
+  <!--
+    Server-rendered catalog: visible without JavaScript and to crawlers / AI
+    agents that don't execute JS. Hidden once Alpine hydrates (see .js rule in
+    style.css). Mirrors the interactive grid above.
+  -->
+  <section class="ssr-catalog" aria-label="Dashboard catalog">
+    {{/* Default home view = dashboards only (matches the interactive default
+        filterKind below). Panels stay discoverable via sitemap, the JSON-LD
+        ItemList in <head> (which lists every entry), and their own pages. */}}
+    {{ $entries := sort (where (where .Site.RegularPages "Section" "catalog") "Params.entry_kind" "dashboard") "Title" }}
+    <ul class="ssr-catalog-grid">
+      {{ range $entries }}
+      <li class="ssr-card">
+        <a class="ssr-card-link" href="{{ .RelPermalink }}">
+          {{ if .Params.thumbnail }}
+          <img
+            class="ssr-card-image"
+            src="{{ (printf "/%s" .Params.thumbnail) | relURL }}"
+            alt="{{ .Title }}"
+            {{ with .Params.thumbnail_width }}width="{{ . }}"{{ end }}
+            {{ with .Params.thumbnail_height }}height="{{ . }}"{{ end }}
+            loading="lazy"
+          >
+          {{ end }}
+          <h2 class="ssr-card-title">{{ .Title }}</h2>
+        </a>
+        <div class="ssr-card-badges">
+          <span class="badge badge-{{ .Params.entry_kind }}">{{ .Params.entry_kind }}</span>
+          {{ with .Params.panel_type }}<span class="badge badge-panel-type">{{ . }}</span>{{ end }}
+          {{ with .Params.source }}<span class="badge badge-source">{{ . }}</span>{{ end }}
+        </div>
+        {{ with .Params.description }}<p class="ssr-card-description">{{ . }}</p>{{ end }}
+        {{ with .Params.tags }}
+        <p class="ssr-card-tags">
+          {{ range . }}<span class="tag{{ if strings.HasPrefix . "topic:" }} tag-topic{{ end }}">{{ . }}</span> {{ end }}
+        </p>
+        {{ end }}
+      </li>
+      {{ end }}
+    </ul>
+  </section>
+
   <!-- Lightbox modal -->
   <div
     class="modal-overlay"
@@ -208,7 +252,7 @@
       entries: [],
       loading: true,
       search: '',
-      filterKind: '',
+      filterKind: 'dashboard',   // default home view; clearFilters() returns here
       filterPanelType: '',
       filterTopic: '',
       filterSource: '',
@@ -236,7 +280,7 @@
         return [...new Set(this.entries.map(e => e.panel_type).filter(Boolean))].sort();
       },
       get hasActiveFilters() {
-        return this.search || this.filterKind || this.filterPanelType ||
+        return this.search || this.filterKind !== 'dashboard' || this.filterPanelType ||
                this.filterTopic || this.filterSource || this.filterTags.length;
       },
 
@@ -272,7 +316,7 @@
       },
       clearFilters() {
         this.search = '';
-        this.filterKind = '';
+        this.filterKind = 'dashboard';
         this.filterPanelType = '';
         this.filterTopic = '';
         this.filterSource = '';

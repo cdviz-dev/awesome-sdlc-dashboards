@@ -55,6 +55,8 @@
           src="{{ (printf "/%s" .Params.thumbnail) | relURL }}"
           alt="{{ .Title }}"
           class="entry-image"
+          {{ with .Params.thumbnail_width }}width="{{ . }}"{{ end }}
+          {{ with .Params.thumbnail_height }}height="{{ . }}"{{ end }}
           loading="eager"
         >
       </div>
