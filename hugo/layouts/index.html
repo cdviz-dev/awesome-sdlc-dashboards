@@ -52,11 +52,15 @@
       </div>
     </div>
 
-    <!-- Active tag filter chip -->
-    <div class="filter-tag-chip" x-show="filterTag" x-cloak>
-      <span>Tag:</span>
-      <span class="chip" x-text="filterTag"></span>
-      <button @click="filterTag = ''" aria-label="Remove tag filter">✕</button>
+    <!-- Active tag filter chips -->
+    <div class="filter-tag-chip" x-show="filterTags.length" x-cloak>
+      <span>Tags:</span>
+      <template x-for="tag in filterTags" :key="tag">
+        <span class="chip">
+          <span x-text="tag"></span>
+          <button @click="toggleTag(tag)" aria-label="Remove tag filter">✕</button>
+        </span>
+      </template>
     </div>
   </div>
 
@@ -116,7 +120,7 @@
               <template x-for="tag in entry.tags" :key="tag">
                 <button
                   class="tag"
-                  :class="{ 'tag-active': filterTag === tag, 'tag-topic': tag.startsWith('topic:') }"
+                  :class="{ 'tag-active': filterTags.includes(tag), 'tag-topic': tag.startsWith('topic:') }"
                   @click="toggleTag(tag)"
                   x-text="tag"
                 ></button>
@@ -208,7 +212,7 @@
       filterPanelType: '',
       filterTopic: '',
       filterSource: '',
-      filterTag: '',
+      filterTags: [],
       modal: { open: false, entry: null, imageIdx: 0 },
 
       async init() {
@@ -233,7 +237,7 @@
       },
       get hasActiveFilters() {
         return this.search || this.filterKind || this.filterPanelType ||
-               this.filterTopic || this.filterSource || this.filterTag;
+               this.filterTopic || this.filterSource || this.filterTags.length;
       },
 
       get filtered() {
@@ -242,7 +246,7 @@
           if (this.filterPanelType && e.panel_type !== this.filterPanelType) return false;
           if (this.filterTopic && !(e.topics ?? []).includes(this.filterTopic)) return false;
           if (this.filterSource && e.source !== this.filterSource) return false;
-          if (this.filterTag && !e.tags.includes(this.filterTag)) return false;
+          if (this.filterTags.length && !this.filterTags.every(t => e.tags.includes(t))) return false;
           if (this.search) {
             const q = this.search.toLowerCase();
             return e.title.toLowerCase().includes(q)
@@ -258,7 +262,9 @@
         return (text || '').split('\n').find(l => l.trim()) || '';
       },
       toggleTag(tag) {
-        this.filterTag = this.filterTag === tag ? '' : tag;
+        const i = this.filterTags.indexOf(tag);
+        if (i === -1) this.filterTags.push(tag);
+        else this.filterTags.splice(i, 1);
       },
       filterByDashboard(slug) {
         this.clearFilters();
@@ -270,7 +276,7 @@
         this.filterPanelType = '';
         this.filterTopic = '';
         this.filterSource = '';
-        this.filterTag = '';
+        this.filterTags = [];
       },
       openModal(entry) {
         this.modal = { open: true, entry, imageIdx: 0 };

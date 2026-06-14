@@ -233,6 +233,9 @@ button { cursor: pointer; font: inherit; }
   color: var(--text-muted);
 }
 .filter-tag-chip .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
   background: var(--accent);
   color: var(--on-accent);
   padding: .2rem .55rem;
@@ -240,15 +243,17 @@ button { cursor: pointer; font: inherit; }
   font-size: .75rem;
   font-weight: 600;
 }
-.filter-tag-chip button {
+.filter-tag-chip .chip button {
   background: none;
   border: none;
-  color: var(--text-muted);
+  color: var(--on-accent);
+  opacity: .8;
   font-size: .85rem;
-  padding: 0 .2rem;
+  padding: 0;
   line-height: 1;
+  cursor: pointer;
 }
-.filter-tag-chip button:hover { color: var(--text); }
+.filter-tag-chip .chip button:hover { opacity: 1; }
 
 /* ── Results bar ───────────────────────────────────────────────────────── */
 .results-bar {
