@@ -12,13 +12,13 @@ or contribute entries to help the community.
 
 Each catalog entry is a directory under `catalog/` containing:
 
-- an `index.md` with structured front matter (title, kind, source, tags, …)
-- screenshots in an `images/` sub-directory
+- an `index.yaml` with structured fields (title, kind, source, tags, links, …)
+- screenshots referenced from the yaml
 
 The site is a static HTML + Alpine.js page built by a Bun script. It offers:
 
-- card view with thumbnails
-- filters by **kind** (dashboard / panel), **panel type**, **category**, **source**
+- card view with thumbnails, defaulting to dashboards
+- filters by **kind** (dashboard / panel), **panel type**, **topic**, **source**
 - full-text search across titles, descriptions and tags
 - lightbox for full-size screenshots
 - dark mode
@@ -26,7 +26,7 @@ The site is a static HTML + Alpine.js page built by a Bun script. It offers:
 ## Browse locally
 
 ```bash
-mise run dev      # build + serve at http://localhost:3000
+mise run dev      # build + serve at http://localhost:1313
 ```
 
 Or with plain bun:
@@ -41,33 +41,35 @@ bun run scripts/serve.ts   # serves dist/ at http://localhost:3000
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide.
 
-The short version — add a directory under `catalog/`:
+Have an idea or a question before opening a PR? Start a thread in
+[GitHub Discussions](https://github.com/cdviz-dev/awesome-sdlc-dashboards/discussions) first.
+
+The short version — add a directory under `catalog/` and open a pull request:
 
 ```
 catalog/
   your-entry-slug/
-    index.md
-    images/
-      screenshot.png
+    index.yaml
+    screenshot.png
 ```
 
-With `index.md` front matter like:
+With `index.yaml` like:
 
 ```yaml
----
+# yaml-language-server: $schema=../../schema/entry.json
 title: "My Dashboard"
 kind: dashboard          # dashboard | panel
-category: ci             # ci | cd | testing | security | quality | cost | deployment | incident
 source: grafana          # github | grafana | datadog | cdviz | prometheus | …
-source_url: https://...
+links:
+  - rel: source          # live | source | docs | demo | article
+    url: https://...
 tags:
+  - topic:ci             # topic:ci | topic:cd | topic:testing | topic:security | …
   - my-tool
-  - my-metric
 images:
   - screenshot.png
----
-
-What this dashboard shows and why it's useful.
+description: |
+  What this dashboard shows and why it's useful.
 ```
 
 Then open a pull request — the site is rebuilt and redeployed automatically on merge.
@@ -77,18 +79,14 @@ Then open a pull request — the site is rebuilt and redeployed automatically on
 ```
 catalog/                   # one directory per entry
   <slug>/
-    index.md               # front matter + markdown description
-    images/
-      screenshot.png       # primary screenshot (first = thumbnail)
-      *.png                # additional screenshots (shown in lightbox)
-
-public/                    # static site source
-  index.html
-  style.css
+    index.yaml             # fields + markdown description
+    screenshot.png         # primary screenshot (first = thumbnail)
+    screenshot-*.png       # additional screenshots (shown in lightbox)
 
 scripts/
   build.ts                 # reads catalog/, emits dist/
   serve.ts                 # dev server for dist/
+  validate.ts              # validates entries against schema/entry.json
 
 .github/workflows/
   publish.yml              # build + deploy to GitHub Pages on push to main

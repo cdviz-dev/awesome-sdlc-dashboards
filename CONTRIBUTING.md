@@ -12,7 +12,7 @@ Each entry lives in its own directory under `catalog/`:
 ```
 catalog/
   your-entry-slug/
-    index.md
+    index.yaml
     images/
       screenshot.png
       screenshot-detail.png   # optional: multiple images are supported
@@ -99,6 +99,9 @@ bun run scripts/build.ts      # build
 - The PR title should summarise what you're adding: `add: GitHub Actions - Usage Metrics dashboard`
 - Screenshots are required for new entries (no placeholder)
 
+Not sure if something belongs in the catalog? Start a discussion first →
+https://github.com/cdviz-dev/awesome-sdlc-dashboards/discussions
+
 ## Topics and sources
 
 Use existing values where possible to keep filters useful. Check `catalog.json` (generated after build)
@@ -134,4 +137,5 @@ Feel free to add new values — just be consistent with the style (lowercase, hy
 
 ## Questions?
 
-Open an issue or start a discussion on GitHub.
+Open a thread in [GitHub Discussions](https://github.com/cdviz-dev/awesome-sdlc-dashboards/discussions)
+for questions, ideas, or feedback before opening a PR or issue.
