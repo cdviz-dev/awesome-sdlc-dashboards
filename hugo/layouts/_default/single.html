@@ -52,7 +52,7 @@
       {{ if .Params.thumbnail }}
       <div class="entry-image-wrap">
         <img
-          src="{{ .Params.thumbnail | absURL }}"
+          src="{{ (printf "/%s" .Params.thumbnail) | relURL }}"
           alt="{{ .Title }}"
           class="entry-image"
           loading="eager"

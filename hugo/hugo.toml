@@ -2,6 +2,7 @@ baseURL = "https://cdviz-dev.github.io/awesome-sdlc-dashboards/"
 title = "Awesome SDLC Dashboards"
 languageCode = "en-us"
 publishDir = "../dist"
+relativeURLs = true
 
 disableKinds = ["taxonomy", "term", "section"]
 
