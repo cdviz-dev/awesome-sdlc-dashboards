@@ -94,6 +94,10 @@ scripts/
   publish.yml              # build + deploy to GitHub Pages on push to main
 ```
 
+## Sponsoring
+
+Sponsored by [CDviz](https://cdviz.dev) — open-source SDLC observability built on [CDEvents](https://cdevents.dev).
+
 ## License
 
 Content is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
