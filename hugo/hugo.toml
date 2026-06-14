@@ -1,0 +1,13 @@
+baseURL = "https://cdviz-dev.github.io/awesome-sdlc-dashboards/"
+title = "Awesome SDLC Dashboards"
+languageCode = "en-us"
+publishDir = "../dist"
+
+disableKinds = ["taxonomy", "term", "section"]
+
+[params]
+  description = "A curated catalog of dashboards and panels for Software Development Lifecycle metrics — inspiration for your own monitoring and observability setup."
+  githubURL = "https://github.com/cdviz-dev/awesome-sdlc-dashboards"
+
+[markup.goldmark.renderer]
+  unsafe = false

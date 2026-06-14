@@ -1,20 +1,24 @@
 [tools]
 bun = "latest"
+hugo = "0.147.0"
 
 [tasks.install]
 description = "Install dependencies"
 run = "bun install --frozen-lockfile"
 
 [tasks.build]
-description = "Build the catalog site into dist/"
-run = "bun run scripts/build.ts"
+description = "Build catalog data + Hugo static site into dist/"
+run = [
+  "bun run scripts/build.ts",
+  "hugo --source hugo --minify",
+]
 depends = ["install"]
 
 [tasks.dev]
-description = "Build then serve the site locally at http://localhost:3000"
+description = "Build catalog data then serve via Hugo dev server at http://localhost:1313"
 run = [
   "bun run scripts/build.ts",
-  "bun run scripts/serve.ts",
+  "hugo server --source hugo --bind 0.0.0.0 --port 1313",
 ]
 depends = ["install"]
 

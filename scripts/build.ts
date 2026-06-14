@@ -24,8 +24,9 @@ function renderMarkdown(md: string): string {
 
 const ROOT = new URL("..", import.meta.url).pathname;
 const CATALOG_DIR = join(ROOT, "catalog");
-const PUBLIC_DIR = join(ROOT, "public");
 const DIST_DIR = join(ROOT, "dist");
+const HUGO_STATIC_DIR = join(ROOT, "hugo", "static");
+const HUGO_CONTENT_DIR = join(ROOT, "hugo", "content", "catalog");
 
 const IMAGE_EXTS = new Set([".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".avif"]);
 
@@ -67,7 +68,7 @@ async function buildCatalog(): Promise<Entry[]> {
 
     // Copy images dir and collect refs
     const srcImages = join(CATALOG_DIR, slug, "images");
-    const destImages = join(DIST_DIR, "catalog", slug, "images");
+    const destImages = join(HUGO_STATIC_DIR, "catalog", slug, "images");
     const imageRefs: string[] = [];
 
     try {
@@ -88,7 +89,7 @@ async function buildCatalog(): Promise<Entry[]> {
       images = [];
       for (const p of data.images as string[]) {
         const src = join(CATALOG_DIR, slug, p);
-        const destDir = join(DIST_DIR, "catalog", slug);
+        const destDir = join(HUGO_STATIC_DIR, "catalog", slug);
         await mkdir(destDir, { recursive: true });
         await copyFile(src, join(destDir, p));
         images.push(`catalog/${slug}/${p}`);
@@ -129,32 +130,102 @@ async function buildCatalog(): Promise<Entry[]> {
   });
 }
 
-async function copyPublic(): Promise<void> {
-  const files = await readdir(PUBLIC_DIR, { withFileTypes: true });
-  await mkdir(DIST_DIR, { recursive: true });
-  for (const f of files) {
-    if (f.isFile()) {
-      await copyFile(join(PUBLIC_DIR, f.name), join(DIST_DIR, f.name));
+function firstParagraph(md: string): string {
+  return md.split('\n')
+    .find(l => l.trim() && !l.startsWith('#'))
+    ?.trim()
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')   // strip markdown links
+    .replace(/[*_`]/g, '')                        // strip inline formatting
+    .slice(0, 160) ?? '';
+}
+
+function yamlStr(v: string): string {
+  // quote strings that need it (contain special chars or look like YAML keywords)
+  if (/[:#\[\]{}&*!|>'"%@`,]/.test(v) || /^(true|false|null|~)$/i.test(v) || v === '') {
+    return JSON.stringify(v);
+  }
+  return v;
+}
+
+function toYamlFrontMatter(fm: Record<string, unknown>): string {
+  const lines: string[] = [];
+  for (const [key, value] of Object.entries(fm)) {
+    if (value === undefined || value === null) continue;
+    if (typeof value === 'string') {
+      lines.push(`${key}: ${yamlStr(value)}`);
+    } else if (typeof value === 'number' || typeof value === 'boolean') {
+      lines.push(`${key}: ${value}`);
+    } else if (Array.isArray(value)) {
+      if (value.length === 0) {
+        lines.push(`${key}: []`);
+      } else if (value.every(v => typeof v === 'string')) {
+        lines.push(`${key}:`);
+        for (const item of value as string[]) lines.push(`  - ${yamlStr(item)}`);
+      } else {
+        lines.push(`${key}:`);
+        for (const item of value) {
+          if (typeof item === 'object' && item !== null) {
+            const entries = Object.entries(item as Record<string, string>);
+            lines.push(`  - ${entries[0][0]}: ${yamlStr(entries[0][1])}`);
+            for (const [k, v] of entries.slice(1)) lines.push(`    ${k}: ${yamlStr(v)}`);
+          } else {
+            lines.push(`  - ${item}`);
+          }
+        }
+      }
     }
+  }
+  return lines.join('\n') + '\n';
+}
+
+async function writeHugoContent(entries: Entry[]): Promise<void> {
+  await mkdir(HUGO_CONTENT_DIR, { recursive: true });
+
+  for (const entry of entries) {
+    const dir = join(HUGO_CONTENT_DIR, entry.slug);
+    await mkdir(dir, { recursive: true });
+
+    const fm: Record<string, unknown> = {
+      title: entry.title,
+      entry_kind: entry.kind,
+      tags: entry.tags,
+      topics: entry.topics,
+      images: entry.images,
+      links: entry.links,
+      primary_url: entry.primary_url,
+      description: firstParagraph(entry.description),
+    };
+    if (entry.source) fm.source = entry.source;
+    if (entry.panel_type) fm.panel_type = entry.panel_type;
+    if (entry.thumbnail) fm.thumbnail = entry.thumbnail;
+    if (entry.related_dashboard) fm.related_dashboard = entry.related_dashboard;
+
+    const content = `---\n${toYamlFrontMatter(fm)}---\n\n${entry.description}\n`;
+    await writeFile(join(dir, "index.md"), content);
   }
 }
 
 async function main(): Promise<void> {
   await mkdir(DIST_DIR, { recursive: true });
+  await mkdir(HUGO_STATIC_DIR, { recursive: true });
 
-  const [entries] = await Promise.all([buildCatalog(), copyPublic()]);
+  const entries = await buildCatalog();
 
-  await writeFile(
-    join(DIST_DIR, "catalog.json"),
-    JSON.stringify(entries, null, 2),
-  );
+  await Promise.all([
+    writeHugoContent(entries),
+    writeFile(
+      join(HUGO_STATIC_DIR, "catalog.json"),
+      JSON.stringify(entries, null, 2),
+    ),
+  ]);
 
   console.log(`\nBuilt ${entries.length} entries:`);
   for (const e of entries) {
     const type = e.panel_type ? ` (${e.panel_type})` : "";
     console.log(`  [${e.kind}${type}] ${e.title}`);
   }
-  console.log(`\nOutput: ${DIST_DIR}`);
+  console.log(`\nHugo content: ${HUGO_CONTENT_DIR}`);
+  console.log(`Hugo static:  ${HUGO_STATIC_DIR}`);
 }
 
 main().catch((err) => {

@@ -1,11 +1,16 @@
 ---
 name: create-catalog-entry
-description: Create a new catalog entry for awesome-sdlc-dashboards from a screenshot or image URL plus the source page URL. Extracts metadata from the page, fills entry fields, asks for missing info, writes the entry, and offers to process other entries found on the same page.
+description: Create, update, or batch-create catalog entries for awesome-sdlc-dashboards from a screenshot or image URL plus the source page URL. Extracts metadata from the page, fills entry fields, asks for missing info, writes entries, updates existing ones, and creates several entries when the source page lists multiple dashboards or panels.
 ---
 
-# Create Catalog Entry
+# Create / Update Catalog Entry
 
-Create a new entry in the `catalog/` directory from a screenshot (file path or image URL) and the URL of the source page where the screenshot was taken.
+Manage entries in the `catalog/` directory from a screenshot (file path or image URL) and the URL of the source page where the screenshot was taken.
+
+This skill handles three modes:
+- **Create** — add one new entry (default).
+- **Update** — modify an existing entry (fields, image, tags, links, description).
+- **Batch** — when the source page lists several dashboards or panels, create (or update) one entry per item in a single run.
 
 ## Inputs
 
@@ -14,6 +19,19 @@ The user provides one or both of:
 - **Source URL**: the web page where the screenshot was captured
 
 At minimum one of these must be present. If only the image is given, ask for the source URL before proceeding (it's needed for links and metadata).
+
+## Step 0 — Determine the mode
+
+1. **Update** if any of these hold:
+   - The user says "update", "edit", "fix", "modify", "refresh" an entry, OR
+   - A slug they name already exists under `catalog/` (`ls catalog/` and compare slugified names), OR
+   - You generate a slug (Step 3) that collides with an existing `catalog/<slug>/` directory.
+
+   In the collision case, do NOT silently overwrite — confirm with the user whether to update the existing entry or pick a different slug. Then follow **Update flow** below.
+
+2. **Batch** if the source page names more than one dashboard/panel and the user wants several (e.g. "add all of these", "create entries for each panel"). Follow **Batch flow** below.
+
+3. **Create** otherwise — proceed Step 1 → Step 5 for a single entry.
 
 ## Step 1 — Analyze the image
 
@@ -116,9 +134,46 @@ Omit `panel_type` entirely for dashboards. Omit `related_dashboard` if not known
 
 4. Run validation: `cd <catalog-root> && mise run validate` (or `bun run scripts/validate.ts` if mise not available). Fix any reported errors.
 
+## Update flow
+
+When the mode is **Update** (Step 0):
+
+1. **Locate** the entry: `catalog/<slug>/index.yaml`. If the user named it loosely, match against `ls catalog/`.
+2. **Read** the current `index.yaml` so you preserve fields the user does not want changed.
+3. **Apply changes** only to the fields requested or clearly improved by new inputs:
+   - New image provided → overwrite `catalog/<slug>/screenshot.png` (same Bash `cp`/`curl` as Step 5) and keep `images` pointing at it.
+   - New/better metadata from a re-fetched page (Steps 2–3) → update `title`, `source`, `links`, `tags`, `description`, `panel_type`, `related_dashboard` as needed.
+   - Leave every untouched field exactly as it was — do not drop comments, ordering, or the `# yaml-language-server:` header line.
+4. **Confirm** the diff with the user before writing (show old → new for each changed field), unless they already said "go ahead".
+5. **Write** the updated `index.yaml` (use Edit for targeted field changes; rewrite the file only if many fields change).
+6. **Validate**: `cd <catalog-root> && mise run validate` (or `bun run scripts/validate.ts`). Fix reported errors.
+
+Do not rename the slug/directory on update unless the user explicitly asks; a slug change means moving the directory (`git mv`) and updating any `related_dashboard` references that point to it.
+
+## Batch flow
+
+When the source page lists several dashboards/panels and the user wants more than one:
+
+1. **Enumerate** all named dashboards/panels on the page (from Step 2). Slugify each and check `ls catalog/` to tag each as NEW or EXISTING (existing → update candidate).
+2. **Present the plan once** and get a single confirmation:
+
+   ```
+   Found N entries on the page:
+     1. "Panel Name A"      (panel, timeseries)   → NEW
+     2. "Dashboard Name B"  (dashboard)           → NEW
+     3. "Panel Name C"      (panel, stat)         → EXISTING (update)
+   Create/update all of these? (all / pick numbers / no)
+   ```
+
+3. **Process each selected item** in turn: run Steps 1–5 (create) or the Update flow (existing) per item, reusing the already-fetched page analysis. For images: use any provided per-item screenshots; if an item has no image, ask once for all missing images up front, or note the entry as needing a screenshot rather than blocking the whole batch.
+4. **Validate once at the end**: `cd <catalog-root> && mise run validate`. Fix errors per entry.
+5. **Summarize**: list each slug created or updated, and any items skipped for missing screenshots.
+
+Avoid re-asking the confirmation question per item — confirm the batch once, then run unattended.
+
 ## Step 6 — Offer additional entries from the same page
 
-After creating the entry, check if the source page contained OTHER named dashboards or panels that are not yet in the catalog.
+For a single **Create**, after writing the entry check if the source page contained OTHER named dashboards or panels not yet in the catalog.
 
 To check existing entries: `ls catalog/` — compare slugified names.
 
@@ -129,10 +184,10 @@ Found X more potential entries on the same page:
   1. "Panel Name A" (panel, timeseries)
   2. "Dashboard Name B" (dashboard)
 
-Work on one of these next? (1/2/no)
+Work on these next? (all / pick numbers / no)
 ```
 
-If user picks one, restart from Step 1 using the same source URL but focusing on that specific dashboard/panel. Ask the user to provide a screenshot for it if you don't already have one.
+If the user picks several, switch to the **Batch flow**. If one, restart from Step 1 using the same source URL focused on that item. Ask for a screenshot if you don't already have one.
 
 ## Notes
 
