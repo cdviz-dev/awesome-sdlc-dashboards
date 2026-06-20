@@ -73,7 +73,7 @@
   <!-- Card grid -->
   <main class="card-grid" x-show="!loading">
     <template x-for="entry in filtered" :key="entry.slug">
-      <article class="card" :class="`kind-${entry.kind}`">
+      <article class="card" :class="`kind-${entry.kind}`" x-init="$el.dataset.slug = entry.slug; $el.dataset.title = entry.title; cardObserver.observe($el)">
 
         <!-- Thumbnail -->
         <div class="card-image-wrap" @click="openModal(entry)">
@@ -247,6 +247,11 @@
 </div>
 
 <script>
+  // tracking must never break the page if umami fails to load/block
+  function track(name, data) {
+    try { window.umami?.track(name, data); } catch (e) { /* no-op */ }
+  }
+
   function catalog() {
     return {
       entries: [],
@@ -258,8 +263,22 @@
       filterSource: '',
       filterTags: [],
       modal: { open: false, entry: null, imageIdx: 0 },
+      cardObserver: null,
 
       async init() {
+        this.cardObserver = new IntersectionObserver((entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              track('card_view', { slug: e.target.dataset.slug, title: e.target.dataset.title });
+              this.cardObserver.unobserve(e.target);
+            }
+          }
+        }, { threshold: 0.5 });
+
+        this.$watch('search', (value) => {
+          if (value) track('search', { query: value });
+        });
+
         try {
           const res = await fetch("catalog.json");
           this.entries = await res.json();
